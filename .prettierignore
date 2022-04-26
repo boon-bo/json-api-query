@@ -1,0 +1,26 @@
+server
+
+# Styles
+app/styles/_app-md.scss
+app/styles/_app-sm.scss
+app/styles/_app-xs.scss
+app/styles/_error-pages.scss
+app/styles/_flash-controls.scss
+app/styles/_flash-tables.scss
+app/styles/_forms.scss
+app/styles/_helpers.scss
+app/styles/_invoicing.scss
+app/styles/_print.scss
+app/styles/_report-filter-variables.scss
+app/styles/_route-maintenance-item.scss
+app/styles/_tables.scss
+app/styles/_ui-elements.scss
+app/styles/app.css
+app/styles/app.scss
+app/styles/theme-overrides.scss
+
+app/styles/components/maintenance
+app/styles/components/ui
+app/styles/elements
+app/styles/helpers
+app/styles/mixins

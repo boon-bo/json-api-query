@@ -1,0 +1,27 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+      "baseUrl": "./",
+      "module": "commonjs",
+      "experimentalDecorators": true,
+      "strictPropertyInitialization": false,
+      "isolatedModules": false,
+      "strict": false,
+      "noImplicitAny": false,
+      "target": "es5",
+      "typeRoots" : [
+        "../node_modules/@types"
+      ]
+    },
+    "exclude": [
+      "../node_modules"
+    ],
+    "include": [
+      "./**/*.ts"
+, "../src/index.ts"    ],
+    "paths": {
+      "json-api-query/test": [
+        "./utility/index.ts"
+      ]
+    }
+  }
