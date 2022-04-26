@@ -7,6 +7,7 @@
     "test": "nyc ./node_modules/.bin/_mocha 'test/**/*.test.ts'",
     "build": "tsc"
   },
+  "repository": "https://github.com/boon-bo/json-api-query",
   "author": "",
   "license": "ISC",
   "devDependencies": {
