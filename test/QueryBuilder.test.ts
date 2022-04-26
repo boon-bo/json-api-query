@@ -302,7 +302,7 @@ class QueryBuilderUnitTests {
                 }
             }
         }).build();
-        expect(result).to.equal("?sort[nested]=property1Nested")
+        expect(result).to.equal("?sort[nested]=property1Nested,-property2Nested")
     }
 
     @test 'order works - complex with direction object'() {
@@ -352,19 +352,19 @@ class QueryBuilderUnitTests {
         expect(result).to.equal("?filter=or(equals(a,'b'),equals(or1,'or2'))")
     }
 
-    @test 'two wheres makes an or - nested - throws'() {
-        expect(() => this.sut.find({
-            where: [{
-                nested: {
-                    property1Nested: "test"
-                }
-            }, {
-                nested: {
-                    property2Nested: false
-                }
-            }]
-        }).build()).to.throw('You can\'t do an implicit OR using nested properties')
-    }
+    // @test 'two wheres makes an or - nested - throws'() {
+    //     expect(() => this.sut.find({
+    //         where: [{
+    //             nested: {
+    //                 property1Nested: "test"
+    //             }
+    //         }, {
+    //             nested: {
+    //                 property2Nested: false
+    //             }
+    //         }]
+    //     }).build()).to.throw('You can\'t do an implicit OR using nested properties')
+    // }
 
 
     @test 'ors and and'() {
@@ -385,7 +385,7 @@ class QueryBuilderUnitTests {
                 }]
         }).build()
 
-        expect(result).to.equal("?filter=and(or(startsWith(stageName,'andy),startsWith(firstName,'andy),startsWith(lastName,'andy'),equals(isActive,true),equals(caeApproved,true))")
+        expect(result).to.equal("?filter=or(and(startsWith(stageName,'Andy'),equals(isActive,'true'),equals(caeApproved,'true')),and(startsWith(firstName,'Andy'),equals(isActive,'true'),equals(caeApproved,'true')),and(startsWith(lastName,'Andy'),equals(isActive,'true'),equals(caeApproved,'true')))")
     }
 
     @test 'single where with multiple props generates ands'() {
@@ -428,7 +428,7 @@ class QueryBuilderUnitTests {
                 property2: "ASC"
             },
         }).build();
-        expect(result).to.equal("?sort=property2&filter=or(equals(a,'b'),equals(c,'d'),not(equals(not1,'not2')),equals(or1,'or2'),equals(or3,'or4'),equals(a,'c'),not(equals(not1,'not5')))&include=nested&fields[nested]=property2Nested&page[size]=0&page[number]=10")
+        expect(result).to.equal("?sort=property2&filter=or(and(equals(a,'b'),equals(c,'d'),not(equals(not1,'not2'))),and(equals(or1,'or2'),equals(or3,'or4')),and(equals(a,'c'),not(equals(not1,'not5'))))&include=nested&fields[nested]=property2Nested&page[size]=0&page[number]=10")
     }
 
     @test
