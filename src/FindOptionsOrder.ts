@@ -1,4 +1,4 @@
-import {FindOptionsOrderProperty} from "./FindOptionsOrderProperty";
+import { FindOptionsOrderProperty } from './FindOptionsOrderProperty'
 
 /**
  * Order by find options.

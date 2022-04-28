@@ -1,2 +1,1 @@
-export interface IOperator {
-}
+export interface IOperator {}

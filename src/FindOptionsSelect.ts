@@ -1,4 +1,4 @@
-import {FindOptionsSelectProperty} from "./FindOptionsSelectProperty";
+import { FindOptionsSelectProperty } from './FindOptionsSelectProperty'
 
 /**
  * Select find options.

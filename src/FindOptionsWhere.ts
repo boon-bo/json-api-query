@@ -1,4 +1,4 @@
-import {FindOptionsWhereProperty} from "./FindOptionsWhereProperty";
+import { FindOptionsWhereProperty } from './FindOptionsWhereProperty'
 
 /** :
  * Used for find operations.

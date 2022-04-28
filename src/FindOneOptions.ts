@@ -1,13 +1,12 @@
-import {FindOptionsWhere} from "./FindOptionsWhere";
-import {FindOptionsSelect} from "./FindOptionsSelect";
-import {FindOptionsRelations} from "./FindOptionsRelations";
-import {FindOptionsOrder} from "./FindOptionsOrder";
+import { FindOptionsWhere } from './FindOptionsWhere'
+import { FindOptionsSelect } from './FindOptionsSelect'
+import { FindOptionsRelations } from './FindOptionsRelations'
+import { FindOptionsOrder } from './FindOptionsOrder'
 
 /**
  * Defines a special criteria to find specific entity.
  */
 export interface FindOneOptions<Entity = any> {
-   
     /**
      * Specifies what columns should be retrieved.
      */
@@ -23,11 +22,8 @@ export interface FindOneOptions<Entity = any> {
      */
     relations?: FindOptionsRelations<Entity>
 
-
     /**
      * Order, in which entities should be ordered.
      */
     order?: FindOptionsOrder<Entity>
-
-
 }

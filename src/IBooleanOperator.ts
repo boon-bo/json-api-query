@@ -1,4 +1,3 @@
-import { IOperator } from "./IOperator";
+import { IOperator } from './IOperator'
 
-
-export interface IBooleanOperator extends IOperator { }
+export interface IBooleanOperator extends IOperator {}

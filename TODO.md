@@ -1,8 +1,7 @@
 TEST:
 
-- or/and operators
-- QueryBuilder
-- SparseFieldSet
+-   or/and operators
+-   QueryBuilder
+-   SparseFieldSet
 
 DEV:
-

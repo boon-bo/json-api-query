@@ -1,10 +1,10 @@
 ## JSON-API-QUERY
 
-A javascript client helper for APIs built with https://www.jsonapi.net/ 
+A javascript client helper for APIs built with https://www.jsonapi.net/
 
-> NOTE: this is not an API client - it's a query builder for you to use in your client code. 
+> NOTE: this is not an API client - it's a query builder for you to use in your client code.
 
-The design / inspiration of this API was lifted quite heavily from https://github.com/typeorm/typeorm - though it is not meant to match it. 
+The design / inspiration of this API was lifted quite heavily from https://github.com/typeorm/typeorm - though it is not meant to match it.
 
 ## Examples:
 
@@ -15,11 +15,13 @@ Legacy syntax is not supported, there is some consideration in the code to add t
 ### Basic filtering:
 
 ```typescript
-new QueryBuilder<TestClass>().find({
-    where: {
-        numProp: 1
-    }
-}).build();
+new QueryBuilder<TestClass>()
+    .find({
+        where: {
+            numProp: 1,
+        },
+    })
+    .build()
 ```
 
 Generates the following:
@@ -29,11 +31,13 @@ Generates the following:
 ### Filtering using ANY:
 
 ```typescript
-new QueryBuilder<TestClass>().find({
-    where: {
-        numProp: Any([1, 2, 3])
-    }
-}).build();
+new QueryBuilder<TestClass>()
+    .find({
+        where: {
+            numProp: Any([1, 2, 3]),
+        },
+    })
+    .build()
 ```
 
 Generates the following:
@@ -43,11 +47,13 @@ Generates the following:
 ### Filtering using CONTAINS:
 
 ```typescript
-new QueryBuilder<TestClass>().find({
-    where: {
-        numProp: Contains("lol")
-    }
-}).build();
+new QueryBuilder<TestClass>()
+    .find({
+        where: {
+            numProp: Contains('lol'),
+        },
+    })
+    .build()
 ```
 
 Generates the following:
@@ -57,11 +63,13 @@ Generates the following:
 ### Filtering using NEGATION:
 
 ```typescript
-new QueryBuilder<TestClass>().find({
-    where: {
-        numProp: Not(Equals(1))
-    }
-}).build();
+new QueryBuilder<TestClass>()
+    .find({
+        where: {
+            numProp: Not(Equals(1)),
+        },
+    })
+    .build()
 ```
 
 Generates the following:
@@ -71,11 +79,13 @@ Generates the following:
 ### Filtering using OR:
 
 ```typescript
-new QueryBuilder<TestClass>().find({
-    where: {
-        numProp: Or([Has([1, 2, 3]), Equals(1)])
-    }
-}).build();
+new QueryBuilder<TestClass>()
+    .find({
+        where: {
+            numProp: Or([Has([1, 2, 3]), Equals(1)]),
+        },
+    })
+    .build()
 ```
 
 Generates the following:
@@ -85,13 +95,18 @@ Generates the following:
 ### Filtering using implicit OR:
 
 ```typescript
-new QueryBuilder<TestClass>().find({
-    where: [{
-        numProp: Has([1, 2, 3])
-    }, {
-        numProp: Equals(1)
-    }]
-}).build();
+new QueryBuilder<TestClass>()
+    .find({
+        where: [
+            {
+                numProp: Has([1, 2, 3]),
+            },
+            {
+                numProp: Equals(1),
+            },
+        ],
+    })
+    .build()
 ```
 
 Generates the following:
@@ -101,13 +116,15 @@ Generates the following:
 ### Filtering using nested properties:
 
 ```typescript
-new QueryBuilder<TestClass>().find({
-    where: {
-        nested: {
-            property1Nested: Equals("test")
-        }
-    }
-}).build();
+new QueryBuilder<TestClass>()
+    .find({
+        where: {
+            nested: {
+                property1Nested: Equals('test'),
+            },
+        },
+    })
+    .build()
 ```
 
 Generates the following:
@@ -117,13 +134,15 @@ Generates the following:
 ### Including relationships:
 
 ```typescript
-new QueryBuilder<TestClass>().find({
-    relations: {
-        nested: {
-            nestedAgain: true
+new QueryBuilder<TestClass>()
+    .find({
+        relations: {
+            nested: {
+                nestedAgain: true,
+            },
         },
-    },
-}).build();
+    })
+    .build()
 ```
 
 Generates the following:
@@ -133,12 +152,13 @@ Generates the following:
 ### Sparse fieldsets:
 
 ```typescript
-new QueryBuilder<TestClass>().find({
-    fields: {
-        property2: true,
-
-    }
-}).build();
+new QueryBuilder<TestClass>()
+    .find({
+        fields: {
+            property2: true,
+        },
+    })
+    .build()
 ```
 
 Generates the following:
@@ -148,17 +168,19 @@ Generates the following:
 ### Ordering:
 
 ```typescript
-new QueryBuilder<TestClass>().find({
-    order: {
-        property2: "ASC",
-        nested: {
-            property1Nested: "DESC",
-            property2Nested: {
-                direction: "ASC"
-            }
-        }
-    }
-}).build();
+new QueryBuilder<TestClass>()
+    .find({
+        order: {
+            property2: 'ASC',
+            nested: {
+                property1Nested: 'DESC',
+                property2Nested: {
+                    direction: 'ASC',
+                },
+            },
+        },
+    })
+    .build()
 ```
 
 Generates the following:
@@ -168,37 +190,39 @@ Generates the following:
 ### Putting it all together:
 
 ```typescript
-new QueryBuilder<TestClass>().find({
-    where:  {
-        a: Contains("lol"),
-        not1: Not(Equals('not5')),
-        nested: {
-            property2Nested: true,
-            property1Nested: Has(['one', 'two']),
-            nestedAgain:{
-                property1Nested: EndsWith('wot')
-            }
-        }
-    },
-    relations: {
-        nested: true
-    },
-    fields: {
-        firstName: true,
-        lastName: true,
-        nested: {
-            property2Nested: true
-        }
-    },
-    number: 10,
-    size: 0,
-    order: {
-        property2: "ASC",
-        nested: {
-            property1Nested: "DESC"
-        }
-    },
-}).build();
+new QueryBuilder<TestClass>()
+    .find({
+        where: {
+            a: Contains('lol'),
+            not1: Not(Equals('not5')),
+            nested: {
+                property2Nested: true,
+                property1Nested: Has(['one', 'two']),
+                nestedAgain: {
+                    property1Nested: EndsWith('wot'),
+                },
+            },
+        },
+        relations: {
+            nested: true,
+        },
+        fields: {
+            firstName: true,
+            lastName: true,
+            nested: {
+                property2Nested: true,
+            },
+        },
+        number: 10,
+        size: 0,
+        order: {
+            property2: 'ASC',
+            nested: {
+                property1Nested: 'DESC',
+            },
+        },
+    })
+    .build()
 ```
 
 Generates the following:

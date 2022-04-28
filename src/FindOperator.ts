@@ -1,9 +1,9 @@
-import {InstanceChecker} from "./InstanceChecker";
-import {FindOperatorType} from "./FindOperatorType";
-import {ObjectLiteral} from "./ObjectLiteral";
+import { InstanceChecker } from './InstanceChecker'
+import { FindOperatorType } from './FindOperatorType'
+import { ObjectLiteral } from './ObjectLiteral'
 
 export class FindOperator<T> {
-    readonly "@instanceof" = Symbol.for("FindOperator")
+    readonly '@instanceof' = Symbol.for('FindOperator')
 
     // -------------------------------------------------------------------------
     // Private Properties
@@ -17,7 +17,7 @@ export class FindOperator<T> {
     /**
      * Parameter value.
      */
-    private readonly _value:  T | FindOperator<T> | FindOperator<T>[]
+    private readonly _value: T | FindOperator<T> | FindOperator<T>[]
 
     /**
      * ObjectLiteral parameters.
@@ -57,8 +57,7 @@ export class FindOperator<T> {
      * Extracts final value if value is another find operator.
      */
     get useParameter(): boolean {
-        if (InstanceChecker.isFindOperator(this._value))
-            return this._value.useParameter
+        if (InstanceChecker.isFindOperator(this._value)) return this._value.useParameter
 
         return this._useParameter
     }
@@ -68,8 +67,7 @@ export class FindOperator<T> {
      * Extracts final value if value is another find operator.
      */
     get multipleParameters(): boolean {
-        if (InstanceChecker.isFindOperator(this._value))
-            return this._value.multipleParameters
+        if (InstanceChecker.isFindOperator(this._value)) return this._value.multipleParameters
 
         return this._multipleParameters
     }
@@ -83,10 +81,9 @@ export class FindOperator<T> {
 
     /**
      * Gets the final value needs to be used as parameter value.
-     */ 
+     */
     get value(): T | FindOperator<T>[] {
-        if (InstanceChecker.isFindOperator(this._value))
-            return this._value.value
+        if (InstanceChecker.isFindOperator(this._value)) return this._value.value
 
         // TODO: check if this is an array - if it is? what then?
         return this._value
@@ -96,8 +93,7 @@ export class FindOperator<T> {
      * Gets ObjectLiteral parameters.
      */
     get objectLiteralParameters(): ObjectLiteral | undefined {
-        if (InstanceChecker.isFindOperator(this._value))
-            return this._value.objectLiteralParameters
+        if (InstanceChecker.isFindOperator(this._value)) return this._value.objectLiteralParameters
 
         return this._objectLiteralParameters
     }

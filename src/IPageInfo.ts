@@ -1,5 +1,4 @@
-
 export interface IPageInfo {
-    size: number;
-    number: number;
+    size: number
+    number: number
 }

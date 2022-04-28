@@ -1,5 +1,5 @@
-import {FindOperator} from "../FindOperator";
+import { FindOperator } from '../FindOperator'
 
 export function Has<T>(value: T[] | FindOperator<T>): FindOperator<T> {
-    return new FindOperator("has", value as any, true, true)
+    return new FindOperator('has', value as any, true, true)
 }

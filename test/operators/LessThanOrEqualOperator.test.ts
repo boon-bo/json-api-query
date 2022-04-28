@@ -1,19 +1,20 @@
-import { suite, test, should, expect } from '../utility';
-import { LessThanOrEqualOperator } from '../../src/';
+import { suite, test, should, expect } from '../utility'
+import { LessThanOrEqualOperator } from '../../src/'
 
-should();
-@suite class LessThanOrEqualOperatorUnitTests {
-  private SUT: LessThanOrEqualOperator
+should()
+@suite
+class LessThanOrEqualOperatorUnitTests {
+    private SUT: LessThanOrEqualOperator
 
-  before() {
-    this.SUT = new LessThanOrEqualOperator('property', 'value1');
-  }
+    before() {
+        this.SUT = new LessThanOrEqualOperator('property', 'value1')
+    }
 
-  @test 'Can construct'() {
-    expect(this.SUT).should.be.not.undefined;
-  }
+    @test 'Can construct'() {
+        expect(this.SUT).should.be.not.undefined
+    }
 
-  @test 'toString works'() {
-    expect(this.SUT.toString()).to.equal("lessOrEqual(property,'value1')");
-  }
+    @test 'toString works'() {
+        expect(this.SUT.toString()).to.equal("lessOrEqual(property,'value1')")
+    }
 }

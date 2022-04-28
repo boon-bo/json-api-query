@@ -1,4 +1,4 @@
-import {FindOptionsRelationsProperty} from "./FindOptionsRelationsProperty";
+import { FindOptionsRelationsProperty } from './FindOptionsRelationsProperty'
 
 /**
  * Relations find options.
