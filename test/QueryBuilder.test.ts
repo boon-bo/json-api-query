@@ -73,6 +73,18 @@ class QueryBuilderUnitTests {
         expect(result).to.equal("?filter=equals(numProp,'1')")
     }
 
+    @test 'find - equals raw null'() {
+        let result = this.sut
+            .find({
+                where: {
+                    numProp: Equals(null),
+                },
+            })
+            .build()
+
+        expect(result).to.equal("?filter=equals(numProp,null)")
+    }
+
     @test 'find - equals implicit'() {
         let result = this.sut
             .find({
