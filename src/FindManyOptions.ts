@@ -7,10 +7,10 @@ export interface FindManyOptions<Entity = any> extends FindOneOptions<Entity> {
     /**
      * Offset (paginated) where from entities should be taken.
      */
-    size?: number
+    size?: number | string
 
     /**
      * Limit (paginated) - max number of entities should be taken.
      */
-    number?: number
+    number?: number | string
 }

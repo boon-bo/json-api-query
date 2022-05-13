@@ -13,31 +13,32 @@ import {
     OrOperator,
     StartsWithOperator,
 } from './operators/dialect'
-import { IComparisonOperator } from './IComparisonOperator'
-import { IPageInfo } from './IPageInfo'
-import { FindOptionsWhere } from './FindOptionsWhere'
-import { FindManyOptions } from './FindManyOptions'
-import { InstanceChecker } from './InstanceChecker'
-import { SparseFieldSet } from './SparseFieldSet'
-import { FindOperator } from './FindOperator'
-import { FindOptionsRelations } from './FindOptionsRelations'
-import { FindOptionsSelect } from './FindOptionsSelect'
-import { SparseField } from './SparseField'
-import { FindOptionsOrder } from './FindOptionsOrder'
-import { FindOptionsOrderValue } from './FindOptionsOrderValue'
-import { Sorts } from './Sorts'
-import { SortField } from './SortField'
+import {IComparisonOperator} from './IComparisonOperator'
+import {IPageInfo} from './IPageInfo'
+import {FindOptionsWhere} from './FindOptionsWhere'
+import {FindManyOptions} from './FindManyOptions'
+import {InstanceChecker} from './InstanceChecker'
+import {SparseFieldSet} from './SparseFieldSet'
+import {FindOperator} from './FindOperator'
+import {FindOptionsRelations} from './FindOptionsRelations'
+import {FindOptionsSelect} from './FindOptionsSelect'
+import {SparseField} from './SparseField'
+import {FindOptionsOrder} from './FindOptionsOrder'
+import {FindOptionsOrderValue} from './FindOptionsOrderValue'
+import {Sorts} from './Sorts'
+import {SortField} from './SortField'
+
 
 export class QueryBuilder<T> {
-    _operators: Array<IComparisonOperator> = []
-    _model: string = ''
-    _pageInfo: IPageInfo | null = null
-    _includes: Array<string> = []
-    _sorts: Sorts | null = null
-    _fields: SparseFieldSet | null = null
-    _childQueryBuilder: QueryBuilder<T> | null = null
-    _childQueryBuilders: QueryBuilder<T>[] = []
-    _findOptions: FindManyOptions<T> | undefined
+    private _operators: Array<IComparisonOperator> = []
+    private readonly _model: string = ''
+    private _pageInfo: IPageInfo | null = null
+    private _includes: Array<string> = []
+    private _sorts: Sorts | null = null
+    private _fields: SparseFieldSet | null = null
+    private readonly _childQueryBuilder: QueryBuilder<T> | null = null
+    private _childQueryBuilders: QueryBuilder<T>[] = []
+    private _findOptions: FindManyOptions<T> | undefined
 
     constructor(public childQueryBuilder: QueryBuilder<T> | null = null, public model: string = '') {
         this._childQueryBuilder = childQueryBuilder
@@ -165,16 +166,18 @@ export class QueryBuilder<T> {
             if (Array.isArray(where) && where.length === 1) {
                 where = where[0]
             }
+
             let ops = Array<IComparisonOperator>()
             for (let key in where) {
                 if (where[key] === undefined || where[key] === null) continue
-
                 if (!InstanceChecker.isFindOperator(where[key])) {
                     if (where[key] == null) {
                         //null or undefined
                     } else if (typeof where[key] == 'object') {
+                        // TODO: if the object @ where[key] on the actual model being queried is an array
+                        // create the child QB otherwise we need to do Equals(parent.child,'something')
                         let cqb = new QueryBuilder(null, key)
-                        cqb.find({ where: where[key] })
+                        cqb.find({where: where[key]})
                         this._childQueryBuilders.push(cqb)
                         continue
                     } else {

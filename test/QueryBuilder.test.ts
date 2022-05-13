@@ -19,6 +19,7 @@ class TestClass {
     property1: string
     property2: boolean
     nested: NestedTestClass
+    nestedArray: NestedTestClass[]
     a: string
     c: string
     not1: string
@@ -72,6 +73,34 @@ class QueryBuilderUnitTests {
 
         expect(result).to.equal("?filter=equals(numProp,'1')")
     }
+
+    @test 'find - equals raw nested array'() {
+        let result = this.sut
+            .find({
+                where: {
+                   nestedArray:{
+                          property1Nested: Equals('lol'),
+                   }
+                },
+            })
+            .build()
+
+        expect(result).to.equal("?filter[nestedArray]=equals(property1Nested,'lol')")
+    }
+
+    // @test 'find - equals raw nested not array'() {
+    //     let result = this.sut
+    //         .find({
+    //             where: {
+    //                nested:{
+    //                       property1Nested: Equals('lol'),
+    //                }
+    //             },
+    //         })
+    //         .build()
+
+    //     expect(result).to.equal("?filter=equals(nestedArray.property1Nested,'lol')")
+    // }
 
     @test 'find - equals raw null'() {
         let result = this.sut
@@ -398,6 +427,16 @@ class QueryBuilderUnitTests {
             .find({
                 number: 10,
                 size: 0,
+            })
+            .build()
+        expect(result).to.equal('?page[size]=0&page[number]=10')
+    }
+
+    @test 'page as strings works'() {
+        let result = this.sut
+            .find({
+                number: "10,something:20",
+                size: "10,something:20",
             })
             .build()
         expect(result).to.equal('?page[size]=0&page[number]=10')
