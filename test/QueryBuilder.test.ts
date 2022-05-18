@@ -15,7 +15,7 @@ import {LessThan} from '../src/operators/LessThan'
 import {GreaterThanOrEqual} from '../src/operators/GreaterThanOrEqual'
 import {Equals} from '../src/operators/Equals'
 
-class TestClass {
+abstract class TestClass {
     property1: string
     property2: boolean
     nested: NestedTestClass
@@ -88,19 +88,19 @@ class QueryBuilderUnitTests {
         expect(result).to.equal("?filter[nestedArray]=equals(property1Nested,'lol')")
     }
 
-    // @test 'find - equals raw nested not array'() {
-    //     let result = this.sut
-    //         .find({
-    //             where: {
-    //                nested:{
-    //                       property1Nested: Equals('lol'),
-    //                }
-    //             },
-    //         })
-    //         .build()
+    @test 'find - equals raw nested not array'() {
+        let result = this.sut
+            .find({
+                where: {
+                   nested:{
+                          property1Nested: Equals('lol'),
+                   }
+                },
+            })
+            .build()
 
-    //     expect(result).to.equal("?filter=equals(nestedArray.property1Nested,'lol')")
-    // }
+        expect(result).to.equal("?filter=equals(nested.property1Nested,'lol')")
+    }
 
     @test 'find - equals raw null'() {
         let result = this.sut
@@ -339,7 +339,7 @@ class QueryBuilderUnitTests {
                 },
             })
             .build()
-        expect(result).to.equal('?fields[nested]=property2Nested&fields[nested.nestedAgain]=property1Nested')
+        expect(result).to.equal('?fields[nested]=property2Nested&fields[nestedAgain]=property1Nested')
     }
 
     @test 'sparse fieldsets works - combined'() {

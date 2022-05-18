@@ -140,7 +140,7 @@ export class QueryBuilder<T> {
             if (typeof relations[key] === 'boolean') {
                 fields.addField(new SparseField(path, [key]))
             } else {
-                this.getRelationForSparseFieldSet(relations[key], fields, path + '.' + key)
+                this.getRelationForSparseFieldSet(relations[key], fields, key)
             }
         }
     }
@@ -152,11 +152,11 @@ export class QueryBuilder<T> {
             operators.push(
                 new OrOperator(
                     ...where.map((whereItem) => {
-                        for (let key in whereItem) {
-                            // if (typeof whereItem[key] == "object" && !InstanceChecker.isFindOperator(whereItem[key])) {
-                            //     throw Error('You can\'t do an implicit OR using nested properties')
-                            // }
-                        }
+                        // for (let key in whereItem) {
+                        //     if (typeof whereItem[key] == "object" && !InstanceChecker.isFindOperator(whereItem[key])) {
+                        //         throw Error('You can\'t do an implicit OR using nested properties')
+                        //     }
+                        // }
 
                         return this.buildWhere(whereItem)
                     }),
