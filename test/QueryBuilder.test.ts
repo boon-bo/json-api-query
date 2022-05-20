@@ -4,6 +4,7 @@ import {GreaterThan, Any, Contains, EndsWith, Has, StartsWith, Or, Not, LessThan
 import * as schema  from "./Models/schema.json"
 import * as TJS from "typescript-json-schema";
 import {TestClass} from "./Models/Models";
+import { IBooking } from 'Models/IBooking';
 should()
 
 @suite
@@ -455,6 +456,32 @@ class QueryBuilderUnitTests {
             .build()
 
         expect(result).to.equal("?filter=and(equals(isActive,'true'),equals(caeApproved,'true'))")
+    }
+
+    @test
+    'regression 20 may 2022'(){
+        let sut = new QueryBuilder<IBooking>("", "IBooking", schema as TJS.Definition, false, null, null)
+
+          let result = sut
+            .find({
+                size: 10,
+                number: 1,
+                where: {
+                    approvedDate: Equals(null),
+                    venue: {
+                        name: StartsWith('Andy'),
+                    },
+                },
+                relations: {
+                    artists: {
+                        images: true,
+                    },
+                    venue: true
+                },
+            })
+            .build();
+
+            expect(result).to.equal('?filter=equals(approvedDate,null)&include=artists.images,venue&page[size]=10&page[number]=1&filter=startsWith(venue.name,\'Andy\')')
     }
 
     @test

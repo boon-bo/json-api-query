@@ -1,92 +1,499 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
-        "NestedNestedTestClass": {
+        "Frequency": {
+            "enum": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "type": "number"
+        },
+        "IBooking": {
             "properties": {
-                "nested": {
-                    "$ref": "#/definitions/NestedTestClass"
+                "approved": {
+                    "type": "boolean"
                 },
-                "property1Nested": {
+                "approvedBy": {
                     "type": "string"
                 },
-                "property2Nested": {
+                "approvedDate": {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "artists": {
+                    "items": {
+                        "$ref": "#/definitions/IProfileDetails"
+                    },
+                    "type": "array"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "booking-exceptions": {
+                    "items": {
+                        "$ref": "#/definitions/IBookingException"
+                    },
+                    "type": "array"
+                },
+                "calFile": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "dateRequested": {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "duration": {
+                    "type": "number"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "endDate": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "frequencyType": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "progress": {
+                    "type": "number"
+                },
+                "recurrenceCount": {
+                    "type": "number"
+                },
+                "recurrenceFrequency": {
+                    "$ref": "#/definitions/RecurrenceFrequencyType"
+                },
+                "recurrencePattern": {
+                    "type": "string"
+                },
+                "rejected": {
+                    "type": "boolean"
+                },
+                "stageName": {
+                    "type": "string"
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "venue": {
+                    "$ref": "#/definitions/IVenue"
+                }
+            },
+            "type": "object"
+        },
+        "IBookingException": {
+            "properties": {
+                "artists": {
+                    "items": {
+                        "$ref": "#/definitions/IProfileDetails"
+                    },
+                    "type": "array"
+                },
+                "booking": {
+                    "$ref": "#/definitions/IBooking"
+                },
+                "booking-id": {
+                    "type": "string"
+                },
+                "exceptionDate": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "IConnectedAccounts": {
+            "properties": {
+                "github": {
+                    "type": "boolean"
+                },
+                "google": {
+                    "type": "boolean"
+                },
+                "stack": {
                     "type": "boolean"
                 }
             },
             "type": "object"
         },
-        "NestedTestClass": {
+        "IDeactivateAccount": {
             "properties": {
-                "nestedAgain": {
-                    "$ref": "#/definitions/NestedNestedTestClass"
-                },
-                "property1Nested": {
-                    "type": "string"
-                },
-                "property2Nested": {
+                "confirm": {
                     "type": "boolean"
                 }
             },
             "type": "object"
         },
-        "TestClass": {
+        "IEmailPreferences": {
             "properties": {
-                "PropertyAny": {
+                "customerPaymentDispute": {
+                    "type": "boolean"
+                },
+                "freeCollections": {
+                    "type": "boolean"
+                },
+                "invoicePayments": {
+                    "type": "boolean"
+                },
+                "payouts": {
+                    "type": "boolean"
+                },
+                "refundAlert": {
+                    "type": "boolean"
+                },
+                "successfulPayments": {
+                    "type": "boolean"
+                },
+                "webhookAPIEndpoints": {
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
+        "IImage": {
+            "properties": {
+                "id": {
                     "type": "string"
                 },
-                "a": {
+                "url": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "INotifications": {
+            "properties": {
+                "billingUpdates": {
+                    "properties": {
+                        "email": {
+                            "type": "boolean"
+                        },
+                        "phone": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                },
+                "completeProjects": {
+                    "properties": {
+                        "email": {
+                            "type": "boolean"
+                        },
+                        "phone": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                },
+                "newTeamMembers": {
+                    "properties": {
+                        "email": {
+                            "type": "boolean"
+                        },
+                        "phone": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                },
+                "newsletters": {
+                    "properties": {
+                        "email": {
+                            "type": "boolean"
+                        },
+                        "phone": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                },
+                "notifications": {
+                    "properties": {
+                        "email": {
+                            "type": "boolean"
+                        },
+                        "phone": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "IProfileDetails": {
+            "properties": {
+                "address1": {
                     "type": "string"
                 },
-                "c": {
+                "address2": {
                     "type": "string"
+                },
+                "allowMarketing": {
+                    "type": "boolean"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "biography": {
+                    "type": "string"
+                },
+                "booking-exceptions": {
+                    "items": {
+                        "$ref": "#/definitions/IBookingException"
+                    },
+                    "type": "array"
                 },
                 "caeApproved": {
                     "type": "boolean"
                 },
+                "city": {
+                    "type": "string"
+                },
+                "communications": {
+                    "properties": {
+                        "email": {
+                            "type": "boolean"
+                        },
+                        "phone": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                },
+                "company": {
+                    "type": "string"
+                },
+                "companySite": {
+                    "type": "string"
+                },
+                "contactPhone": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "dbsApproved": {
+                    "type": "boolean"
+                },
+                "dbsExpires": {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "facebookUrl": {
+                    "type": "string"
+                },
                 "firstName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "images": {
+                    "items": {
+                        "$ref": "#/definitions/IImage"
+                    },
+                    "type": "array"
+                },
+                "instagramUrl": {
                     "type": "string"
                 },
                 "isActive": {
                     "type": "boolean"
                 },
+                "keywords": {
+                    "type": "string"
+                },
+                "language": {
+                    "type": "string"
+                },
                 "lastName": {
                     "type": "string"
                 },
-                "nested": {
-                    "$ref": "#/definitions/NestedTestClass"
-                },
-                "nestedArray": {
-                    "items": {
-                        "$ref": "#/definitions/NestedTestClass"
-                    },
-                    "type": "array"
-                },
-                "not1": {
-                    "type": "string"
-                },
-                "numProp": {
+                "latitude": {
                     "type": "number"
                 },
-                "or1": {
+                "legacyId": {
                     "type": "string"
                 },
-                "or3": {
+                "longitude": {
+                    "type": "number"
+                },
+                "mobile": {
                     "type": "string"
                 },
-                "prop12": {
-                    "type": "string"
-                },
-                "property1": {
-                    "type": "string"
-                },
-                "property2": {
+                "pliApproved": {
                     "type": "boolean"
                 },
+                "pliExpiry": {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "postcode": {
+                    "type": "string"
+                },
+                "quote1": {
+                    "type": "string"
+                },
+                "quote2": {
+                    "type": "string"
+                },
+                "quote3": {
+                    "type": "string"
+                },
+                "quote4": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "number"
+                },
                 "stageName": {
+                    "type": "string"
+                },
+                "termsAcknowledged": {
+                    "type": "boolean"
+                },
+                "timeZone": {
+                    "type": "string"
+                },
+                "town": {
+                    "$ref": "#/definitions/ITown"
+                },
+                "travelMiles": {
+                    "type": "number"
+                },
+                "videoUrl": {
+                    "type": "string"
+                },
+                "youTubeUrl": {
                     "type": "string"
                 }
             },
             "type": "object"
+        },
+        "ITown": {
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "IUpdateEmail": {
+            "properties": {
+                "confirmPassword": {
+                    "type": "string"
+                },
+                "newEmail": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "IUpdatePassword": {
+            "properties": {
+                "currentPassword": {
+                    "type": "string"
+                },
+                "newPassword": {
+                    "type": "string"
+                },
+                "passwordConfirmation": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "IVenue": {
+            "properties": {
+                "address1": {
+                    "type": "string"
+                },
+                "address2": {
+                    "type": "string"
+                },
+                "address3": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "invoiceEmail": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "string"
+                },
+                "longitude": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "postCode": {
+                    "type": "string"
+                },
+                "town": {
+                    "$ref": "#/definitions/ITown"
+                },
+                "xeroId": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "RecurrenceFrequencyType": {
+            "enum": [
+                0,
+                4,
+                5,
+                6,
+                7
+            ],
+            "type": "number"
         }
     }
 }

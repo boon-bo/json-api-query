@@ -1,3 +1,5 @@
+import { NestedTestClass } from "./NestedTestClass"
+
 export interface TestClass {
     property1: string
     property2: boolean
@@ -18,14 +20,4 @@ export interface TestClass {
     isActive: boolean
 }
 
-export interface NestedNestedTestClass {
-    property1Nested: string
-    property2Nested: boolean
-    nested: NestedTestClass
-}
 
-export interface NestedTestClass {
-    property1Nested: string
-    property2Nested: boolean
-    nestedAgain: NestedNestedTestClass
-}
