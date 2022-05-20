@@ -1,65 +1,23 @@
-import {suite, test, should, expect, chai} from './utility'
+import {suite, test, should, expect, chai, timeout} from './utility'
 import {QueryBuilder} from '../src'
-import {AndOperator, AnyOperator, EqualsOperator, NotOperator, OrOperator} from '../src/operators/dialect'
-import {GreaterThan} from '../src/operators/GreaterThan'
-import {SparseFieldSet} from '../src'
-import {Any} from '../src/operators/Any'
-import {Contains} from '../src/operators/Contains'
-import {EndsWith} from '../src/operators/EndsWith'
-import {Has} from '../src/operators/Has'
-import {StartsWith} from '../src/operators/StartsWith'
-import {Or} from '../src/operators/Or'
-import {Not} from '../src/operators/Not'
-import {LessThanOrEqual} from '../src/operators/LessThanOrEqual'
-import {LessThan} from '../src/operators/LessThan'
-import {GreaterThanOrEqual} from '../src/operators/GreaterThanOrEqual'
-import {Equals} from '../src/operators/Equals'
-
-abstract class TestClass {
-    property1: string
-    property2: boolean
-    nested: NestedTestClass
-    nestedArray: NestedTestClass[]
-    a: string
-    c: string
-    not1: string
-    or1: string
-    or3: string
-    PropertyAny: string
-    prop12: string
-    numProp: number
-    stageName: string
-    lastName: string
-    firstName: string
-    caeApproved: boolean
-    isActive: boolean
-}
-
-class NestedNestedTestClass {
-    property1Nested: string
-    property2Nested: boolean
-    nested: NestedTestClass
-}
-
-class NestedTestClass {
-    property1Nested: string
-    property2Nested: boolean
-    nestedAgain: NestedNestedTestClass
-}
-
+import {GreaterThan, Any, Contains, EndsWith, Has, StartsWith, Or, Not, LessThanOrEqual, LessThan, GreaterThanOrEqual, Equals} from '../src'
+import * as schema  from "./Models/schema.json"
+import * as TJS from "typescript-json-schema";
+import {TestClass} from "./Models/Models";
 should()
 
 @suite
 class QueryBuilderUnitTests {
     private sut: QueryBuilder<TestClass>
 
-    // todo: test with modelname
     before() {
-        this.sut = new QueryBuilder<TestClass>()
+        this.sut = new QueryBuilder<TestClass>("", "TestClass", schema as TJS.Definition, false, null, null)
     }
 
-    @test 'Can construct'() {
+    @timeout(40000)
+    @test 'Can construct'(done) {
         expect(this.sut).should.be.not.undefined
+        done()
     }
 
     @test 'find - equals'() {
@@ -298,7 +256,7 @@ class QueryBuilderUnitTests {
             })
             .build()
 
-        expect(result).to.equal("?filter[nested]=equals(property1Nested,'test')")
+        expect(result).to.equal("?filter=equals(nested.property1Nested,'test')")
     }
 
     @test 'includes works'() {
@@ -357,7 +315,7 @@ class QueryBuilderUnitTests {
             })
             .build()
         expect(result).to.equal(
-            '?fields[nested]=property2Nested&fields[nested.nestedAgain]=property1Nested&fields=property2',
+            '?fields[nested]=property2Nested&fields[nestedAgain]=property1Nested&fields=property2',
         )
     }
 
@@ -439,7 +397,7 @@ class QueryBuilderUnitTests {
                 size: "10,something:20",
             })
             .build()
-        expect(result).to.equal('?page[size]=0&page[number]=10')
+        expect(result).to.equal('?page[size]=10,something:20&page[number]=10,something:20')
     }
 
     @test 'two wheres makes an or - simple'() {
@@ -457,20 +415,6 @@ class QueryBuilderUnitTests {
             .build()
         expect(result).to.equal("?filter=or(equals(a,'b'),equals(or1,'or2'))")
     }
-
-    // @test 'two wheres makes an or - nested - throws'() {
-    //     expect(() => this.sut.find({
-    //         where: [{
-    //             nested: {
-    //                 property1Nested: "test"
-    //             }
-    //         }, {
-    //             nested: {
-    //                 property2Nested: false
-    //             }
-    //         }]
-    //     }).build()).to.throw('You can\'t do an implicit OR using nested properties')
-    // }
 
     @test 'ors and and'() {
         let result = this.sut
@@ -588,7 +532,7 @@ class QueryBuilderUnitTests {
             })
             .build()
         expect(result).to.equal(
-            "?sort=property2&sort[nested]=property1Nested&filter=and(contains(a,'lol'),not(equals(not1,'not5')))&include=nested&fields=firstName,lastName&fields[nested]=property2Nested&page[size]=0&page[number]=10&filter[nested]=and(equals(property2Nested,'true'),has(property1Nested,one,two))&filter[nestedAgain]=endsWith(property1Nested,'wot')",
+            "?sort=property2&sort[nested]=property1Nested&filter=and(contains(a,'lol'),not(equals(not1,'not5')))&include=nested&fields=firstName,lastName&fields[nested]=property2Nested&page[size]=0&page[number]=10&filter=and(equals(property2Nested,'true'),has(nested.property1Nested,one,two))&filter=endsWith(nested.nestedAgain.property1Nested,'wot')",
         )
     }
 }

@@ -1,0 +1,93 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "NestedNestedTestClass": {
+            "properties": {
+                "nested": {
+                    "$ref": "#/definitions/NestedTestClass"
+                },
+                "property1Nested": {
+                    "type": "string"
+                },
+                "property2Nested": {
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
+        "NestedTestClass": {
+            "properties": {
+                "nestedAgain": {
+                    "$ref": "#/definitions/NestedNestedTestClass"
+                },
+                "property1Nested": {
+                    "type": "string"
+                },
+                "property2Nested": {
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
+        "TestClass": {
+            "properties": {
+                "PropertyAny": {
+                    "type": "string"
+                },
+                "a": {
+                    "type": "string"
+                },
+                "c": {
+                    "type": "string"
+                },
+                "caeApproved": {
+                    "type": "boolean"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "isActive": {
+                    "type": "boolean"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "nested": {
+                    "$ref": "#/definitions/NestedTestClass"
+                },
+                "nestedArray": {
+                    "items": {
+                        "$ref": "#/definitions/NestedTestClass"
+                    },
+                    "type": "array"
+                },
+                "not1": {
+                    "type": "string"
+                },
+                "numProp": {
+                    "type": "number"
+                },
+                "or1": {
+                    "type": "string"
+                },
+                "or3": {
+                    "type": "string"
+                },
+                "prop12": {
+                    "type": "string"
+                },
+                "property1": {
+                    "type": "string"
+                },
+                "property2": {
+                    "type": "boolean"
+                },
+                "stageName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    }
+}
+

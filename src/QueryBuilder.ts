@@ -27,22 +27,45 @@ import {FindOptionsOrder} from './FindOptionsOrder'
 import {FindOptionsOrderValue} from './FindOptionsOrderValue'
 import {Sorts} from './Sorts'
 import {SortField} from './SortField'
+import {resolve} from "path";
+
+import * as TJS from "typescript-json-schema";
+import {Definition, DefinitionOrBoolean} from "typescript-json-schema";
 
 
 export class QueryBuilder<T> {
     private _operators: Array<IComparisonOperator> = []
-    private readonly _model: string = ''
     private _pageInfo: IPageInfo | null = null
     private _includes: Array<string> = []
     private _sorts: Sorts | null = null
     private _fields: SparseFieldSet | null = null
-    private readonly _childQueryBuilder: QueryBuilder<T> | null = null
     private _childQueryBuilders: QueryBuilder<T>[] = []
     private _findOptions: FindManyOptions<T> | undefined
+    private readonly _originalSchema: TJS.Definition | TJS.DefinitionOrBoolean;
 
-    constructor(public childQueryBuilder: QueryBuilder<T> | null = null, public model: string = '') {
-        this._childQueryBuilder = childQueryBuilder
-        this._model = model
+    constructor(
+        public property: string = '',
+        public modelType: string = '',
+        public schema: Definition | DefinitionOrBoolean = null,
+        public isToManyFromParent: boolean = false,
+        public parentQueryBuilder: QueryBuilder<T> | null = null,
+        public childQueryBuilder: QueryBuilder<T> | null = null,
+    ) {
+        this.childQueryBuilder = childQueryBuilder
+        this.property = property
+        this._originalSchema = schema
+        this.schema = (schema as TJS.Definition).definitions [modelType]
+        this.isToManyFromParent = isToManyFromParent
+        this.modelType = modelType
+        this.parentQueryBuilder = parentQueryBuilder
+    }
+
+    public getPrentPath(){
+        if(this.parentQueryBuilder && this.parentQueryBuilder.getPrentPath() !== ""){
+            return `${this.parentQueryBuilder.getPrentPath()}.${this.property}`
+        }
+
+        return this.property
     }
 
     /**
@@ -73,7 +96,7 @@ export class QueryBuilder<T> {
     }
 
     protected buildSorts(selects: FindOptionsOrder<T> | undefined): Sorts {
-        let fields = new Sorts(this._model)
+        let fields = new Sorts(this.property)
         for (let key in selects) {
             if (typeof selects[key] === 'string') {
                 fields.addField(new SortField(null, selects[key], [key]))
@@ -123,7 +146,7 @@ export class QueryBuilder<T> {
     }
 
     protected buildSparseFieldsets(selects: FindOptionsSelect<T>): SparseFieldSet {
-        let fields = new SparseFieldSet(this._model)
+        let fields = new SparseFieldSet(this.property)
         for (let key in selects) {
             if (typeof selects[key] === 'boolean' && (selects[key] as boolean) == true) {
                 fields.addField(new SparseField(null, [key]))
@@ -152,12 +175,6 @@ export class QueryBuilder<T> {
             operators.push(
                 new OrOperator(
                     ...where.map((whereItem) => {
-                        // for (let key in whereItem) {
-                        //     if (typeof whereItem[key] == "object" && !InstanceChecker.isFindOperator(whereItem[key])) {
-                        //         throw Error('You can\'t do an implicit OR using nested properties')
-                        //     }
-                        // }
-
                         return this.buildWhere(whereItem)
                     }),
                 ),
@@ -170,22 +187,43 @@ export class QueryBuilder<T> {
             let ops = Array<IComparisonOperator>()
             for (let key in where) {
                 if (where[key] === undefined || where[key] === null) continue
+
+                let isToMany = false
+
+                let schema = (this.schema as TJS.Definition).properties[key] as TJS.Definition
+
+                if (schema.type && schema.type === "array") isToMany = true
+
                 if (!InstanceChecker.isFindOperator(where[key])) {
                     if (where[key] == null) {
                         //null or undefined
                     } else if (typeof where[key] == 'object') {
                         // TODO: if the object @ where[key] on the actual model being queried is an array
                         // create the child QB otherwise we need to do Equals(parent.child,'something')
-                        let cqb = new QueryBuilder(null, key)
+
+                        let t = isToMany ?
+                            ((this.schema as TJS.Definition).properties[key] as TJS.Definition).items['$ref'].replace('#/definitions/', '')
+                            : ((this.schema as TJS.Definition).properties[key] as TJS.Definition)['$ref'].replace('#/definitions/', '')
+
+                            let cqb = new QueryBuilder(key, t, this._originalSchema as TJS.Definition, isToMany, this, null)
                         cqb.find({where: where[key]})
-                        this._childQueryBuilders.push(cqb)
-                        continue
+                            this._childQueryBuilders.push(cqb)
+                            continue
                     } else {
-                        ops.push(new EqualsOperator(key, where[key]))
+                        ops.push(new EqualsOperator(key, where[key], key))
                         continue
                     }
                 }
-                let op: IComparisonOperator | null = this.getOperator(where[key], key)
+
+                let path = this.getPrentPath()
+
+                if(path && !this.isToManyFromParent) {
+                    path = `${path}.${key}`
+                }else {
+                    path = key
+                }
+
+                let op: IComparisonOperator | null = this.getOperator(where[key], `${path}`)
                 if (op) {
                     ops.push(op)
                 }
@@ -294,8 +332,8 @@ export class QueryBuilder<T> {
         let sorts: string = ''
         let filterPropertyExpression: string = 'filter'
 
-        if (!this.isNullOrWhiteSpace(this._model)) {
-            filterPropertyExpression = `filter[${this._model}]`
+        if (this.isToManyFromParent &&  this.property) {
+            filterPropertyExpression = `filter[${this.property}]`
         }
 
         compiled = this._operators.map((x) => `${filterPropertyExpression}=${x.toString()}`).join('&')
@@ -308,8 +346,8 @@ export class QueryBuilder<T> {
             final += this.hasQuery(final) ? `&${this._sorts.toString()}` : `?${this._sorts.toString()}`
         }
 
-        if (this._childQueryBuilder) {
-            final += this._childQueryBuilder.build(final)
+        if (this.childQueryBuilder) {
+            final += this.childQueryBuilder.build(final)
         }
 
         if (!this.isNullOrWhiteSpace(compiled) && compiled !== 'filter=') {

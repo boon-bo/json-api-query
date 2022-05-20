@@ -15,8 +15,8 @@
     "strictPropertyInitialization": false,
     "resolveJsonModule": true
   },
-  "exclude": ["node_modules"],
+  "include": ["test/Models"],
+  "exclude": ["node_modules","src"],
   "compileOnSave": false,
-  "buildOnSave": false,
-  "files": ["index.ts"]
+  "buildOnSave": false
 }
