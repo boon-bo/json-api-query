@@ -44,9 +44,9 @@ export class QueryBuilder<T> {
     private readonly _originalSchema: TJS.Definition | TJS.DefinitionOrBoolean;
 
     constructor(
-        public property: string = '',
         public modelType: string = '',
         public schema: Definition | DefinitionOrBoolean = null,
+        public property: string = '',
         public isToManyFromParent: boolean = false,
         public parentQueryBuilder: QueryBuilder<T> | null = null,
         public childQueryBuilder: QueryBuilder<T> | null = null,
@@ -205,7 +205,7 @@ export class QueryBuilder<T> {
                             ((this.schema as TJS.Definition).properties[key] as TJS.Definition).items['$ref'].replace('#/definitions/', '')
                             : ((this.schema as TJS.Definition).properties[key] as TJS.Definition)['$ref'].replace('#/definitions/', '')
 
-                            let cqb = new QueryBuilder(key, t, this._originalSchema as TJS.Definition, isToMany, this, null)
+                            let cqb = new QueryBuilder(t, this._originalSchema as TJS.Definition, key, isToMany, this, null)
                         cqb.find({where: where[key]})
                             this._childQueryBuilders.push(cqb)
                             continue

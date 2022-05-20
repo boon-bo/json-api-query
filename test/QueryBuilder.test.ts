@@ -12,7 +12,7 @@ class QueryBuilderUnitTests {
     private sut: QueryBuilder<TestClass>
 
     before() {
-        this.sut = new QueryBuilder<TestClass>("", "TestClass", schema as TJS.Definition, false, null, null)
+        this.sut = new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition, "", false, null, null)
     }
 
     @timeout(40000)
@@ -460,9 +460,9 @@ class QueryBuilderUnitTests {
 
     @test
     'regression 20 may 2022'(){
-        let sut = new QueryBuilder<IBooking>("", "IBooking", schema as TJS.Definition, false, null, null)
+        let sut = new QueryBuilder<IBooking>("IBooking", schema as TJS.Definition, "", false, null, null)
 
-          let result = sut
+        let result = sut
             .find({
                 size: 10,
                 number: 1,
