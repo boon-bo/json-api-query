@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "typescript-json-schema tsconfig.schema.json \"*\" > test/Models/schema.json && nyc ./node_modules/.bin/_mocha 'test/**/*.test.ts'",
-    "build": "tsc"
+    "build": "typescript-json-schema tsconfig.schema.json \"*\" > test/Models/schema.json && tsc"
   },
   "repository": "https://github.com/boon-bo/json-api-query",
   "author": "",

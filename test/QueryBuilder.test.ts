@@ -3,7 +3,7 @@ import {QueryBuilder} from '../src'
 import {GreaterThan, Any, Contains, EndsWith, Has, StartsWith, Or, Not, LessThanOrEqual, LessThan, GreaterThanOrEqual, Equals} from '../src'
 import * as schema  from "./Models/schema.json"
 import * as TJS from "typescript-json-schema";
-import {TestClass} from "./Models/Models";
+import {TestClass} from "./Models/TestClass";
 import { IBooking } from 'Models/IBooking';
 should()
 
@@ -445,6 +445,23 @@ class QueryBuilderUnitTests {
         )
     }
 
+    @test 'two wheres make an and'() {
+        let result = this.sut
+            .find({
+                where:
+                    {
+                        stageName: StartsWith('Andy'),
+                        isActive: true,
+                    }
+
+            })
+            .build()
+
+        expect(result).to.equal(
+            "?filter=and(startsWith(stageName,'Andy'),equals(isActive,'true'))",
+        )
+    }
+
     @test 'single where with multiple props generates ands'() {
         let result = this.sut
             .find({
@@ -481,8 +498,28 @@ class QueryBuilderUnitTests {
             })
             .build();
 
-            expect(result).to.equal('?filter=equals(approvedDate,null)&include=artists.images,venue&page[size]=10&page[number]=1&filter=startsWith(venue.name,\'Andy\')')
+            expect(result).to.equal('?filter=and(equals(approvedDate,null),startsWith(venue.name,\'Andy\'))&include=artists.images,venue&page[size]=10&page[number]=1')
     }
+
+
+    @test
+    'regression 20 may 2022 2 wheres with nesting make an and'(){
+        let sut = new QueryBuilder<IBooking>("IBooking", schema as TJS.Definition, "", false, null, null)
+
+        let result = sut
+            .find({
+                where: {
+                    approvedDate: Equals(null),
+                    venue: {
+                        name: StartsWith("Andy"),
+                    }
+                },
+            })
+            .build();
+
+        expect(result).to.equal('?filter=and(equals(approvedDate,null),startsWith(venue.name,\'Andy\'))')
+    }
+
 
     @test
     'complex query works'() {
@@ -559,7 +596,7 @@ class QueryBuilderUnitTests {
             })
             .build()
         expect(result).to.equal(
-            "?sort=property2&sort[nested]=property1Nested&filter=and(contains(a,'lol'),not(equals(not1,'not5')))&include=nested&fields=firstName,lastName&fields[nested]=property2Nested&page[size]=0&page[number]=10&filter=and(equals(property2Nested,'true'),has(nested.property1Nested,one,two))&filter=endsWith(nested.nestedAgain.property1Nested,'wot')",
+            "?sort=property2&sort[nested]=property1Nested&filter=and(contains(a,'lol'),not(equals(not1,'not5')),has(nested.nestedAgain.property1Nested,one,two))&include=nested&fields=firstName,lastName&fields[nested]=property2Nested&page[size]=0&page[number]=10",
         )
     }
 }

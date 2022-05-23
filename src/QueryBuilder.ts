@@ -32,6 +32,15 @@ import {resolve} from "path";
 import * as TJS from "typescript-json-schema";
 import {Definition, DefinitionOrBoolean} from "typescript-json-schema";
 
+// For convenience
+type Primitive = string | number | bigint | boolean | undefined | symbol;
+
+// To infinity and beyond >:D
+export type PropertyStringPath<T, Prefix=''> = {
+    [K in keyof T]: T[K] extends Primitive | Array<any>
+        ? `${string & Prefix}${ string & K }`
+        : `${string & Prefix}${ string & K }` | PropertyStringPath <T[K], `${ string & Prefix }${ string & K }.`> ;
+}[keyof T];
 
 export class QueryBuilder<T> {
     private _operators: Array<IComparisonOperator> = []
@@ -205,10 +214,21 @@ export class QueryBuilder<T> {
                             ((this.schema as TJS.Definition).properties[key] as TJS.Definition).items['$ref'].replace('#/definitions/', '')
                             : ((this.schema as TJS.Definition).properties[key] as TJS.Definition)['$ref'].replace('#/definitions/', '')
 
-                            let cqb = new QueryBuilder(t, this._originalSchema as TJS.Definition, key, isToMany, this, null)
-                        cqb.find({where: where[key]})
-                            this._childQueryBuilders.push(cqb)
-                            continue
+                       if(isToMany){
+                           let cqb = new QueryBuilder(t, this._originalSchema as TJS.Definition, key, isToMany, this, null)
+                           cqb.find({where: where[key]})
+                           this._childQueryBuilders.push(cqb)
+                       }else{
+
+                           // search down the where[key] until we get a findOperator
+                           // use the path to build the operator
+                           let op: IComparisonOperator[] | null = this.getChildOperators(where[key], key)
+                           if (op) {
+                               ops.push(...op)
+                           }
+
+                       }
+                        continue
                     } else {
                         ops.push(new EqualsOperator(key, where[key], key))
                         continue
@@ -237,6 +257,69 @@ export class QueryBuilder<T> {
         }
 
         return operators
+    }
+
+    private getChildOperators(whereElement: any, parentKey: string) {
+        let ops = this.findOperators(whereElement)
+        let result = []
+
+       for (var i = 0; i < ops.length; i ++){
+           let o = ops[i]
+           //for (let key in o as any) {
+               let path = `${parentKey}.${ this.getPath(whereElement, o.prop)}`
+               let op: IComparisonOperator | null = this.getOperator(o.op, `${path}`)
+               if (op) {
+                   result.push(op)
+               }
+           //}
+       }
+
+       return result
+    }
+
+    getPath(obj, key) {
+       let paths = []
+
+        function getPaths(obj, path) {
+            if (obj instanceof Object && !(obj instanceof Array)) {
+                for (var k in obj){
+                    paths.push(path + "." + k)
+                    getPaths(obj[k], path + "." + k)
+                }
+            }
+        }
+
+        getPaths(obj, "")
+        return paths.map(function(p) {
+            return p.slice(p.lastIndexOf(".") + 1) == key ? p.slice(1) : ''
+        }).sort(function(a, b) {return b.split(".").length - a.split(".").length;})[0];
+    }
+
+
+    findOperators(o) :  Array<IComparisonOperator>{
+        let ops = Array<IComparisonOperator>()
+        if(o instanceof Array) {
+            for(let i = 0; i < o.length; i++) {
+                let c = [...this.findOperators(o[i])]
+                ops.push(c);
+            }
+        }
+        else
+        {
+            for(let prop in o) {
+                console.log(prop + ': ' + o[prop]);
+                if(InstanceChecker.isFindOperator(o[prop])) {
+                    ops.push({
+                        prop: prop,
+                        op: o[prop]
+                    })
+                }else {
+                    let c = [...this.findOperators(o[prop])]
+                    ops.push(c);
+                }
+            }
+        }
+        return ops;
     }
 
     // TODO: refactor this into a factory class
@@ -385,4 +468,6 @@ export class QueryBuilder<T> {
 
         return final
     }
+
+
 }
