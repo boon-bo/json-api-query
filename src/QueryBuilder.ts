@@ -13,34 +13,39 @@ import {
     OrOperator,
     StartsWithOperator,
 } from './operators/dialect'
-import {IComparisonOperator} from './IComparisonOperator'
-import {IPageInfo} from './IPageInfo'
-import {FindOptionsWhere} from './FindOptionsWhere'
-import {FindManyOptions} from './FindManyOptions'
-import {InstanceChecker} from './InstanceChecker'
-import {SparseFieldSet} from './SparseFieldSet'
-import {FindOperator} from './FindOperator'
-import {FindOptionsRelations} from './FindOptionsRelations'
-import {FindOptionsSelect} from './FindOptionsSelect'
-import {SparseField} from './SparseField'
-import {FindOptionsOrder} from './FindOptionsOrder'
-import {FindOptionsOrderValue} from './FindOptionsOrderValue'
-import {Sorts} from './Sorts'
-import {SortField} from './SortField'
-import {resolve} from "path";
+import { IComparisonOperator } from './IComparisonOperator'
+import { IPageInfo } from './IPageInfo'
+import { FindOptionsWhere } from './FindOptionsWhere'
+import { FindManyOptions } from './FindManyOptions'
+import { InstanceChecker } from './InstanceChecker'
+import { SparseFieldSet } from './SparseFieldSet'
+import { FindOperator } from './FindOperator'
+import { FindOptionsRelations } from './FindOptionsRelations'
+import { FindOptionsSelect } from './FindOptionsSelect'
+import { SparseField } from './SparseField'
+import { FindOptionsOrder } from './FindOptionsOrder'
+import { FindOptionsOrderValue } from './FindOptionsOrderValue'
+import { Sorts } from './Sorts'
+import { SortField } from './SortField'
+import { resolve } from 'path'
 
-import * as TJS from "typescript-json-schema";
-import {Definition, DefinitionOrBoolean} from "typescript-json-schema";
+import * as TJS from 'typescript-json-schema'
+import { Definition, DefinitionOrBoolean } from 'typescript-json-schema'
+
+export class IOpDef {
+    prop: string
+    op: FindOperator<any>
+}
 
 // For convenience
-type Primitive = string | number | bigint | boolean | undefined | symbol;
+type Primitive = string | number | bigint | boolean | undefined | symbol
 
 // To infinity and beyond >:D
-export type PropertyStringPath<T, Prefix=''> = {
+export type PropertyStringPath<T, Prefix = ''> = {
     [K in keyof T]: T[K] extends Primitive | Array<any>
-        ? `${string & Prefix}${ string & K }`
-        : `${string & Prefix}${ string & K }` | PropertyStringPath <T[K], `${ string & Prefix }${ string & K }.`> ;
-}[keyof T];
+        ? `${string & Prefix}${string & K}`
+        : `${string & Prefix}${string & K}` | PropertyStringPath<T[K], `${string & Prefix}${string & K}.`>
+}[keyof T]
 
 export class QueryBuilder<T> {
     private _operators: Array<IComparisonOperator> = []
@@ -50,7 +55,7 @@ export class QueryBuilder<T> {
     private _fields: SparseFieldSet | null = null
     private _childQueryBuilders: QueryBuilder<T>[] = []
     private _findOptions: FindManyOptions<T> | undefined
-    private readonly _originalSchema: TJS.Definition | TJS.DefinitionOrBoolean;
+    private readonly _originalSchema: TJS.Definition | TJS.DefinitionOrBoolean
 
     constructor(
         public modelType: string = '',
@@ -63,14 +68,14 @@ export class QueryBuilder<T> {
         this.childQueryBuilder = childQueryBuilder
         this.property = property
         this._originalSchema = schema
-        this.schema = (schema as TJS.Definition).definitions [modelType]
+        this.schema = (schema as TJS.Definition).definitions[modelType]
         this.isToManyFromParent = isToManyFromParent
         this.modelType = modelType
         this.parentQueryBuilder = parentQueryBuilder
     }
 
-    public getPrentPath(){
-        if(this.parentQueryBuilder && this.parentQueryBuilder.getPrentPath() !== ""){
+    public getPrentPath() {
+        if (this.parentQueryBuilder && this.parentQueryBuilder.getPrentPath() !== '') {
             return `${this.parentQueryBuilder.getPrentPath()}.${this.property}`
         }
 
@@ -201,7 +206,7 @@ export class QueryBuilder<T> {
 
                 let schema = (this.schema as TJS.Definition).properties[key] as TJS.Definition
 
-                if (schema.type && schema.type === "array") isToMany = true
+                if (schema.type && schema.type === 'array') isToMany = true
 
                 if (!InstanceChecker.isFindOperator(where[key])) {
                     if (where[key] == null) {
@@ -210,24 +215,35 @@ export class QueryBuilder<T> {
                         // TODO: if the object @ where[key] on the actual model being queried is an array
                         // create the child QB otherwise we need to do Equals(parent.child,'something')
 
-                        let t = isToMany ?
-                            ((this.schema as TJS.Definition).properties[key] as TJS.Definition).items['$ref'].replace('#/definitions/', '')
-                            : ((this.schema as TJS.Definition).properties[key] as TJS.Definition)['$ref'].replace('#/definitions/', '')
+                        let t = isToMany
+                            ? ((this.schema as TJS.Definition).properties[key] as TJS.Definition).items['$ref'].replace(
+                                  '#/definitions/',
+                                  '',
+                              )
+                            : ((this.schema as TJS.Definition).properties[key] as TJS.Definition)['$ref'].replace(
+                                  '#/definitions/',
+                                  '',
+                              )
 
-                       if(isToMany){
-                           let cqb = new QueryBuilder(t, this._originalSchema as TJS.Definition, key, isToMany, this, null)
-                           cqb.find({where: where[key]})
-                           this._childQueryBuilders.push(cqb)
-                       }else{
-
-                           // search down the where[key] until we get a findOperator
-                           // use the path to build the operator
-                           let op: IComparisonOperator[] | null = this.getChildOperators(where[key], key)
-                           if (op) {
-                               ops.push(...op)
-                           }
-
-                       }
+                        if (isToMany) {
+                            let cqb = new QueryBuilder(
+                                t,
+                                this._originalSchema as TJS.Definition,
+                                key,
+                                isToMany,
+                                this,
+                                null,
+                            )
+                            cqb.find({ where: where[key] })
+                            this._childQueryBuilders.push(cqb)
+                        } else {
+                            // search down the where[key] until we get a findOperator
+                            // use the path to build the operator
+                            let op: IComparisonOperator[] | null = this.getChildOperators(where[key], key)
+                            if (op) {
+                                ops.push(...op)
+                            }
+                        }
                         continue
                     } else {
                         ops.push(new EqualsOperator(key, where[key], key))
@@ -237,9 +253,9 @@ export class QueryBuilder<T> {
 
                 let path = this.getPrentPath()
 
-                if(path && !this.isToManyFromParent) {
+                if (path && !this.isToManyFromParent) {
                     path = `${path}.${key}`
-                }else {
+                } else {
                     path = key
                 }
 
@@ -263,63 +279,62 @@ export class QueryBuilder<T> {
         let ops = this.findOperators(whereElement)
         let result = []
 
-       for (var i = 0; i < ops.length; i ++){
-           let o = ops[i]
-           //for (let key in o as any) {
-               let path = `${parentKey}.${ this.getPath(whereElement, o.prop)}`
-               let op: IComparisonOperator | null = this.getOperator(o.op, `${path}`)
-               if (op) {
-                   result.push(op)
-               }
-           //}
-       }
+        for (var i = 0; i < ops.length; i++) {
+            let o = ops[i]
+            //for (let key in o as any) {
+            let path = `${parentKey}.${this.getPath(whereElement, o.prop)}`
+            let op: IComparisonOperator | null = this.getOperator(o.op, `${path}`)
+            if (op) {
+                result.push(op)
+            }
+            //}
+        }
 
-       return result
+        return result
     }
 
     getPath(obj, key) {
-       let paths = []
+        let paths = []
 
         function getPaths(obj, path) {
             if (obj instanceof Object && !(obj instanceof Array)) {
-                for (var k in obj){
-                    paths.push(path + "." + k)
-                    getPaths(obj[k], path + "." + k)
+                for (var k in obj) {
+                    paths.push(path + '.' + k)
+                    getPaths(obj[k], path + '.' + k)
                 }
             }
         }
 
-        getPaths(obj, "")
-        return paths.map(function(p) {
-            return p.slice(p.lastIndexOf(".") + 1) == key ? p.slice(1) : ''
-        }).sort(function(a, b) {return b.split(".").length - a.split(".").length;})[0];
+        getPaths(obj, '')
+        return paths
+            .map(function (p) {
+                return p.slice(p.lastIndexOf('.') + 1) == key ? p.slice(1) : ''
+            })
+            .sort(function (a, b) {
+                return b.split('.').length - a.split('.').length
+            })[0]
     }
 
-
-    findOperators(o) :  Array<IComparisonOperator>{
-        let ops = Array<IComparisonOperator>()
-        if(o instanceof Array) {
-            for(let i = 0; i < o.length; i++) {
-                let c = [...this.findOperators(o[i])]
-                ops.push(c);
+    findOperators(o: any): Array<IOpDef> {
+        let ops = Array<IOpDef>()
+        if (o instanceof Array) {
+            for (let i = 0; i < o.length; i++) {
+                ops.push(...this.findOperators(o[i]))
             }
-        }
-        else
-        {
-            for(let prop in o) {
-                console.log(prop + ': ' + o[prop]);
-                if(InstanceChecker.isFindOperator(o[prop])) {
+        } else {
+            for (let prop in o) {
+                console.log(prop + ': ' + o[prop])
+                if (InstanceChecker.isFindOperator(o[prop])) {
                     ops.push({
                         prop: prop,
-                        op: o[prop]
-                    })
-                }else {
-                    let c = [...this.findOperators(o[prop])]
-                    ops.push(c);
+                        op: o[prop],
+                    } as IOpDef)
+                } else {
+                    ops.push(...this.findOperators(o[prop]))
                 }
             }
         }
-        return ops;
+        return ops
     }
 
     // TODO: refactor this into a factory class
@@ -415,7 +430,7 @@ export class QueryBuilder<T> {
         let sorts: string = ''
         let filterPropertyExpression: string = 'filter'
 
-        if (this.isToManyFromParent &&  this.property) {
+        if (this.isToManyFromParent && this.property) {
             filterPropertyExpression = `filter[${this.property}]`
         }
 
@@ -468,6 +483,4 @@ export class QueryBuilder<T> {
 
         return final
     }
-
-
 }
