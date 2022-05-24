@@ -1,6 +1,6 @@
 {
   "name": "json-api-query",
-  "version": "3.0.0-next.0",
+  "version": "2.0.0-next.0",
   "description": "A query builder for JSONAPIDotNetCore",
   "main": "index.js",
   "scripts": {
