@@ -2,7 +2,6 @@ import {suite, test, should, expect, chai, timeout} from './utility'
 import {QueryBuilder} from '../src'
 import {GreaterThan, Any, Contains, EndsWith, Has, StartsWith, Or, Not, LessThanOrEqual, LessThan, GreaterThanOrEqual, Equals} from '../src'
 import * as schema  from "./Models/schema.json"
-import * as TJS from "typescript-json-schema";
 import {TestClass} from "./Models/TestClass";
 import { IBooking } from 'Models/IBooking';
 should()
@@ -12,7 +11,7 @@ class QueryBuilderUnitTests {
     private sut: QueryBuilder<TestClass>
 
     before() {
-        this.sut = new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
+        this.sut = new QueryBuilder<TestClass>("TestClass", schema)
     }
 
     @timeout(40000)
@@ -477,7 +476,7 @@ class QueryBuilderUnitTests {
 
     @test
     'regression 20 may 2022'(){
-        let sut = new QueryBuilder<IBooking>("IBooking", schema as TJS.Definition)
+        let sut = new QueryBuilder<IBooking>("IBooking", schema)
 
         let result = sut
             .find({
@@ -504,7 +503,7 @@ class QueryBuilderUnitTests {
 
     @test
     'regression 20 may 2022 2 wheres with nesting make an and'(){
-        let sut = new QueryBuilder<IBooking>("IBooking", schema as TJS.Definition)
+        let sut = new QueryBuilder<IBooking>("IBooking", schema)
 
         let result = sut
             .find({

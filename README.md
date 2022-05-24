@@ -12,9 +12,9 @@ The query builder aims to support all of the terms found in the [since v4.0] doc
 
 Legacy syntax is not supported, there is some consideration in the code to add this later (as well as supporting evolved syntax later on) but I am not sure how worthwhile that would be.
 
-The latest version of this package now uses `typescript-json-schema`. This was requireed so that the types can be infered in the query bulder code. Unlike C#, Typescript's type system is unavailable at runtime, so tailoring the query generation for `HasMany` relations is AFAICS impossible without providing some schema information.
+The latest version of this package now uses `typescript-json-schema`. This was required so that the types can be infered in the query bulder code. Unlike C#, Typescript's type system is unavailable at runtime, so tailoring the query generation for `HasMany` relations is AFAICS impossible without providing some schema information.
 
-To this end I have introduced `typescript-json-schema`. Generating schemas for your models is as easy as adding `"typescript-json-schema tsconfig.schema.json \"*\" > test/Models/schema.json` to your NPM commands section. See this projects `package.json` for an example.
+To this end I have introduced `typescript-json-schema`. Generating schemas for your models is as easy as adding `typescript-json-schema tsconfig.schema.json \"*\" > test/Models/schema.json` to your NPM commands section. See this projects `package.json` for an example.
 
 ### Basic filtering:
 

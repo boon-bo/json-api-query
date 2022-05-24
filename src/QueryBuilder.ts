@@ -59,7 +59,7 @@ export class QueryBuilder<T> {
 
     constructor(
         public modelType: string = '',
-        public schema: Definition | DefinitionOrBoolean = null,
+        public schema: any = null,
         public property: string = '',
         public isToManyFromParent: boolean = false,
         public parentQueryBuilder: QueryBuilder<T> | null = null,
