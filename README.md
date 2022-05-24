@@ -21,7 +21,7 @@ To this end I have introduced `typescript-json-schema`. Generating schemas for y
 ```typescript
 import * as schema  from "./Models/schema.json"
 
-new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
+new QueryBuilder<TestClass>("TestClass", schema)
     .find({
         where: {
             numProp: 1,
@@ -39,7 +39,7 @@ Generates the following:
 ```typescript
 import * as schema  from "./Models/schema.json"
 
-new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
+new QueryBuilder<TestClass>("TestClass", schema)
     .find({
         where: {
             numProp: Any([1, 2, 3]),
@@ -57,7 +57,7 @@ Generates the following:
 ```typescript
 import * as schema  from "./Models/schema.json"
 
-new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
+new QueryBuilder<TestClass>("TestClass", schema)
     .find({
         where: {
             numProp: Contains('lol'),
@@ -75,7 +75,7 @@ Generates the following:
 ```typescript
 import * as schema  from "./Models/schema.json"
 
-new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
+new QueryBuilder<TestClass>("TestClass", schema)
     .find({
         where: {
             numProp: Not(Equals(1)),
@@ -93,7 +93,7 @@ Generates the following:
 ```typescript
 import * as schema  from "./Models/schema.json"
 
-new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
+new QueryBuilder<TestClass>("TestClass", schema)
     .find({
         where: {
             numProp: Or([Has([1, 2, 3]), Equals(1)]),
@@ -111,7 +111,7 @@ Generates the following:
 ```typescript
 import * as schema  from "./Models/schema.json"
 
-new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
+new QueryBuilder<TestClass>("TestClass", schema)
     .find({
         where: [
             {
@@ -134,7 +134,7 @@ Generates the following:
 ```typescript
 import * as schema  from "./Models/schema.json"
 
-new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
+new QueryBuilder<TestClass>("TestClass", schema)
     .find({
         where: {
             nested: {
@@ -154,7 +154,7 @@ Generates the following:
 ```typescript
 import * as schema  from "./Models/schema.json"
 
-new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
+new QueryBuilder<TestClass>("TestClass", schema)
     .find({
         relations: {
             nested: {
@@ -174,7 +174,7 @@ Generates the following:
 ```typescript
 import * as schema  from "./Models/schema.json"
 
-new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
+new QueryBuilder<TestClass>("TestClass", schema)
     .find({
         fields: {
             property2: true,
@@ -192,7 +192,7 @@ Generates the following:
 ```typescript
 import * as schema  from "./Models/schema.json"
 
-new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
+new QueryBuilder<TestClass>("TestClass", schema)
     .find({
         order: {
             property2: 'ASC',
@@ -216,7 +216,7 @@ Generates the following:
 ```typescript
 import * as schema  from "./Models/schema.json"
 
-new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
+new QueryBuilder<TestClass>("TestClass", schema)
     .find({
         where: {
             a: Contains('lol'),
