@@ -8,14 +8,20 @@ The design / inspiration of this API was lifted quite heavily from https://githu
 
 ## Examples:
 
-The query builder supports all of the terms found in the [since v4.0] docs found here: https://www.jsonapi.net/usage/reading/filtering.html
+The query builder aims to support all of the terms found in the [since v4.0] docs found here: https://www.jsonapi.net/usage/reading/filtering.html
 
-Legacy syntax is not supported, there is some consideration in the code to add this later (as well as supporting evolved syntax later on) but I am not sure how worthwhile that would be
+Legacy syntax is not supported, there is some consideration in the code to add this later (as well as supporting evolved syntax later on) but I am not sure how worthwhile that would be.
+
+The latest version of this package now uses `typescript-json-schema`. This was requireed so that the types can be infered in the query bulder code. Unlike C#, Typescript's type system is unavailable at runtime, so tailoring the query generation for `HasMany` relations is AFAICS impossible without providing some schema information.
+
+To this end I have introduced `typescript-json-schema`. Generating schemas for your models is as easy as adding `"typescript-json-schema tsconfig.schema.json \"*\" > test/Models/schema.json` to your NPM commands section. See this projects `package.json` for an example.
 
 ### Basic filtering:
 
 ```typescript
-new QueryBuilder<TestClass>()
+import * as schema  from "./Models/schema.json"
+
+new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
     .find({
         where: {
             numProp: 1,
@@ -31,7 +37,9 @@ Generates the following:
 ### Filtering using ANY:
 
 ```typescript
-new QueryBuilder<TestClass>()
+import * as schema  from "./Models/schema.json"
+
+new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
     .find({
         where: {
             numProp: Any([1, 2, 3]),
@@ -47,7 +55,9 @@ Generates the following:
 ### Filtering using CONTAINS:
 
 ```typescript
-new QueryBuilder<TestClass>()
+import * as schema  from "./Models/schema.json"
+
+new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
     .find({
         where: {
             numProp: Contains('lol'),
@@ -63,7 +73,9 @@ Generates the following:
 ### Filtering using NEGATION:
 
 ```typescript
-new QueryBuilder<TestClass>()
+import * as schema  from "./Models/schema.json"
+
+new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
     .find({
         where: {
             numProp: Not(Equals(1)),
@@ -79,7 +91,9 @@ Generates the following:
 ### Filtering using OR:
 
 ```typescript
-new QueryBuilder<TestClass>()
+import * as schema  from "./Models/schema.json"
+
+new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
     .find({
         where: {
             numProp: Or([Has([1, 2, 3]), Equals(1)]),
@@ -95,7 +109,9 @@ Generates the following:
 ### Filtering using implicit OR:
 
 ```typescript
-new QueryBuilder<TestClass>()
+import * as schema  from "./Models/schema.json"
+
+new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
     .find({
         where: [
             {
@@ -116,7 +132,9 @@ Generates the following:
 ### Filtering using nested properties:
 
 ```typescript
-new QueryBuilder<TestClass>()
+import * as schema  from "./Models/schema.json"
+
+new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
     .find({
         where: {
             nested: {
@@ -134,7 +152,9 @@ Generates the following:
 ### Including relationships:
 
 ```typescript
-new QueryBuilder<TestClass>()
+import * as schema  from "./Models/schema.json"
+
+new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
     .find({
         relations: {
             nested: {
@@ -152,7 +172,9 @@ Generates the following:
 ### Sparse fieldsets:
 
 ```typescript
-new QueryBuilder<TestClass>()
+import * as schema  from "./Models/schema.json"
+
+new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
     .find({
         fields: {
             property2: true,
@@ -168,7 +190,9 @@ Generates the following:
 ### Ordering:
 
 ```typescript
-new QueryBuilder<TestClass>()
+import * as schema  from "./Models/schema.json"
+
+new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
     .find({
         order: {
             property2: 'ASC',
@@ -190,7 +214,9 @@ Generates the following:
 ### Putting it all together:
 
 ```typescript
-new QueryBuilder<TestClass>()
+import * as schema  from "./Models/schema.json"
+
+new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
     .find({
         where: {
             a: Contains('lol'),

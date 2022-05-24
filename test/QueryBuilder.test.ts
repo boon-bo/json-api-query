@@ -12,7 +12,7 @@ class QueryBuilderUnitTests {
     private sut: QueryBuilder<TestClass>
 
     before() {
-        this.sut = new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition, "", false, null, null)
+        this.sut = new QueryBuilder<TestClass>("TestClass", schema as TJS.Definition)
     }
 
     @timeout(40000)
@@ -477,7 +477,7 @@ class QueryBuilderUnitTests {
 
     @test
     'regression 20 may 2022'(){
-        let sut = new QueryBuilder<IBooking>("IBooking", schema as TJS.Definition, "", false, null, null)
+        let sut = new QueryBuilder<IBooking>("IBooking", schema as TJS.Definition)
 
         let result = sut
             .find({
@@ -504,7 +504,7 @@ class QueryBuilderUnitTests {
 
     @test
     'regression 20 may 2022 2 wheres with nesting make an and'(){
-        let sut = new QueryBuilder<IBooking>("IBooking", schema as TJS.Definition, "", false, null, null)
+        let sut = new QueryBuilder<IBooking>("IBooking", schema as TJS.Definition)
 
         let result = sut
             .find({
@@ -596,7 +596,7 @@ class QueryBuilderUnitTests {
             })
             .build()
         expect(result).to.equal(
-            "?sort=property2&sort[nested]=property1Nested&filter=and(contains(a,'lol'),not(equals(not1,'not5')),has(nested.nestedAgain.property1Nested,one,two))&include=nested&fields=firstName,lastName&fields[nested]=property2Nested&page[size]=0&page[number]=10",
+            "?sort=property2&sort[nested]=property1Nested&filter=and(contains(a,'lol'),not(equals(not1,'not5')),has(nested.nestedAgain.property1Nested,one,two),endsWith(nested.nestedAgain.property1Nested,'wot'))&include=nested&fields=firstName,lastName&fields[nested]=property2Nested&page[size]=0&page[number]=10",
         )
     }
 }

@@ -4,6 +4,7 @@
   "description": "A query builder for JSONAPIDotNetCore",
   "main": "index.js",
   "scripts": {
+    "schema": "node_modules/typescript-json-schema/bin/typescript-json-schema tsconfig.schema.json \"*\" > test/Models/schema.json",
     "test": "node_modules/typescript-json-schema/bin/typescript-json-schema tsconfig.schema.json \"*\" > test/Models/schema.json && nyc ./node_modules/.bin/_mocha 'test/**/*.test.ts'",
     "build": "node_modules/typescript-json-schema/bin/typescript-json-schema tsconfig.schema.json \"*\" > test/Models/schema.json && tsc"
   },
