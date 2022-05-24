@@ -1,11 +1,11 @@
 {
   "name": "json-api-query",
-  "version": "2.0.1-next.5",
+  "version": "1.0.19",
   "description": "A query builder for JSONAPIDotNetCore",
   "main": "index.js",
   "scripts": {
-    "test": "typescript-json-schema tsconfig.schema.json \"*\" > test/Models/schema.json && nyc ./node_modules/.bin/_mocha 'test/**/*.test.ts'",
-    "build": "typescript-json-schema tsconfig.schema.json \"*\" > test/Models/schema.json && tsc"
+    "test": "node_modules/typescript-json-schema/bin/typescript-json-schema tsconfig.schema.json \"*\" > test/Models/schema.json && nyc ./node_modules/.bin/_mocha 'test/**/*.test.ts'",
+    "build": "node_modules/typescript-json-schema/bin/typescript-json-schema tsconfig.schema.json \"*\" > test/Models/schema.json && tsc"
   },
   "repository": "https://github.com/boon-bo/json-api-query",
   "author": "",
