@@ -17,7 +17,10 @@ export class SortField {
 
     addField(field: string, dir: FindOptionsOrderValue | FindOptionsOrder<string> | undefined): SortField {
         switch (dir) {
-            case 'desc' || 'DESC':
+            case 'desc':
+                this.fields.push(`-${field}`)
+                break
+            case 'DESC':
                 this.fields.push(`-${field}`)
                 break
             default:

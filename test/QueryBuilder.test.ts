@@ -1,9 +1,22 @@
-import {suite, test, should, expect, chai, timeout} from './utility'
-import {QueryBuilder} from '../src'
-import {GreaterThan, Any, Contains, EndsWith, Has, StartsWith, Or, Not, LessThanOrEqual, LessThan, GreaterThanOrEqual, Equals} from '../src'
-import * as schema  from "./Models/schema.json"
-import {TestClass} from "./Models/TestClass";
-import { IBooking } from 'Models/IBooking';
+import { suite, test, should, expect, chai, timeout } from './utility'
+import { And, QueryBuilder } from '../src'
+import {
+    GreaterThan,
+    Any,
+    Contains,
+    EndsWith,
+    Has,
+    StartsWith,
+    Or,
+    Not,
+    LessThanOrEqual,
+    LessThan,
+    GreaterThanOrEqual,
+    Equals,
+} from '../src'
+import * as schema from './Models/schema.json'
+import { TestClass } from './Models/TestClass'
+import { IBooking } from 'Models/IBooking'
 should()
 
 @suite
@@ -11,11 +24,12 @@ class QueryBuilderUnitTests {
     private sut: QueryBuilder<TestClass>
 
     before() {
-        this.sut = new QueryBuilder<TestClass>("TestClass", schema)
+        this.sut = new QueryBuilder<TestClass>('TestClass', schema)
     }
 
     @timeout(40000)
-    @test 'Can construct'(done) {
+    @test
+    'Can construct'(done) {
         expect(this.sut).should.be.not.undefined
         done()
     }
@@ -36,9 +50,9 @@ class QueryBuilderUnitTests {
         let result = this.sut
             .find({
                 where: {
-                   nestedArray:{
-                          property1Nested: Equals('lol'),
-                   }
+                    nestedArray: {
+                        property1Nested: Equals('lol'),
+                    },
                 },
             })
             .build()
@@ -50,9 +64,9 @@ class QueryBuilderUnitTests {
         let result = this.sut
             .find({
                 where: {
-                   nested:{
-                          property1Nested: Equals('lol'),
-                   }
+                    nested: {
+                        property1Nested: Equals('lol'),
+                    },
                 },
             })
             .build()
@@ -69,7 +83,7 @@ class QueryBuilderUnitTests {
             })
             .build()
 
-        expect(result).to.equal("?filter=equals(numProp,null)")
+        expect(result).to.equal('?filter=equals(numProp,null)')
     }
 
     @test 'find - equals implicit'() {
@@ -233,6 +247,20 @@ class QueryBuilderUnitTests {
         expect(result).to.equal("?filter=or(has(numProp,1,2,3),equals(numProp,'1'))")
     }
 
+    @test 'find - and explicit'() {
+        let result = this.sut
+            .find({
+                where: [
+                    {
+                        numProp: And([Equals(2), Equals(1)]),
+                    },
+                ],
+            })
+            .build()
+
+        expect(result).to.equal("?filter=and(equals(numProp,'2'),equals(numProp,'1'))")
+    }
+
     @test 'find - startsWith'() {
         let result = this.sut
             .find({
@@ -314,14 +342,12 @@ class QueryBuilderUnitTests {
                 },
             })
             .build()
-        expect(result).to.equal(
-            '?fields[nested]=property2Nested&fields[nestedAgain]=property1Nested&fields=property2',
-        )
+        expect(result).to.equal('?fields[nested]=property2Nested&fields[nestedAgain]=property1Nested&fields=property2')
     }
 
     // TODO: this needs to support multiple attrs
     // count and secondary endpoints
-    @test 'order works - simple'() {
+    @test 'order works - simple ASC'() {
         let result = this.sut
             .find({
                 order: {
@@ -330,6 +356,39 @@ class QueryBuilderUnitTests {
             })
             .build()
         expect(result).to.equal('?sort=property2')
+    }
+
+    @test 'order works - simple asc'() {
+        let result = this.sut
+            .find({
+                order: {
+                    property2: 'asc',
+                },
+            })
+            .build()
+        expect(result).to.equal('?sort=property2')
+    }
+
+    @test 'order works - simple DESC'() {
+        let result = this.sut
+            .find({
+                order: {
+                    property2: 'DESC',
+                },
+            })
+            .build()
+        expect(result).to.equal('?sort=-property2')
+    }
+
+    @test 'order works - simple desc'() {
+        let result = this.sut
+            .find({
+                order: {
+                    property2: 'desc',
+                },
+            })
+            .build()
+        expect(result).to.equal('?sort=-property2')
     }
 
     @test 'order works - complex'() {
@@ -393,8 +452,8 @@ class QueryBuilderUnitTests {
     @test 'page as strings works'() {
         let result = this.sut
             .find({
-                number: "10,something:20",
-                size: "10,something:20",
+                number: '10,something:20',
+                size: '10,something:20',
             })
             .build()
         expect(result).to.equal('?page[size]=10,something:20&page[number]=10,something:20')
@@ -447,18 +506,14 @@ class QueryBuilderUnitTests {
     @test 'two wheres make an and'() {
         let result = this.sut
             .find({
-                where:
-                    {
-                        stageName: StartsWith('Andy'),
-                        isActive: true,
-                    }
-
+                where: {
+                    stageName: StartsWith('Andy'),
+                    isActive: true,
+                },
             })
             .build()
 
-        expect(result).to.equal(
-            "?filter=and(startsWith(stageName,'Andy'),equals(isActive,'true'))",
-        )
+        expect(result).to.equal("?filter=and(startsWith(stageName,'Andy'),equals(isActive,'true'))")
     }
 
     @test 'single where with multiple props generates ands'() {
@@ -475,8 +530,8 @@ class QueryBuilderUnitTests {
     }
 
     @test
-    'regression 20 may 2022'(){
-        let sut = new QueryBuilder<IBooking>("IBooking", schema)
+    'regression 20 may 2022'() {
+        let sut = new QueryBuilder<IBooking>('IBooking', schema)
 
         let result = sut
             .find({
@@ -492,33 +547,33 @@ class QueryBuilderUnitTests {
                     artists: {
                         images: true,
                     },
-                    venue: true
+                    venue: true,
                 },
             })
-            .build();
+            .build()
 
-            expect(result).to.equal('?filter=and(equals(approvedDate,null),startsWith(venue.name,\'Andy\'))&include=artists.images,venue&page[size]=10&page[number]=1')
+        expect(result).to.equal(
+            "?filter=and(equals(approvedDate,null),startsWith(venue.name,'Andy'))&include=artists.images,venue&page[size]=10&page[number]=1",
+        )
     }
 
-
     @test
-    'regression 20 may 2022 2 wheres with nesting make an and'(){
-        let sut = new QueryBuilder<IBooking>("IBooking", schema)
+    'regression 20 may 2022 2 wheres with nesting make an and'() {
+        let sut = new QueryBuilder<IBooking>('IBooking', schema)
 
         let result = sut
             .find({
                 where: {
                     approvedDate: Equals(null),
                     venue: {
-                        name: StartsWith("Andy"),
-                    }
+                        name: StartsWith('Andy'),
+                    },
                 },
             })
-            .build();
+            .build()
 
-        expect(result).to.equal('?filter=and(equals(approvedDate,null),startsWith(venue.name,\'Andy\'))')
+        expect(result).to.equal("?filter=and(equals(approvedDate,null),startsWith(venue.name,'Andy'))")
     }
-
 
     @test
     'complex query works'() {

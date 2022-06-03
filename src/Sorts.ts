@@ -12,7 +12,7 @@ export class Sorts {
     addField(field: SortField): Sorts {
         let find = this.params.filter((x) => x.modelName == field.modelName)
         if (find !== null && find.length > 0) {
-            field.fields.forEach((x) => find[0].addField(x, 'desc'))
+           field.fields.forEach((x) => find[0].addField(x, 'desc'))
             // find[0].addFields(field.fields);
             return this
         }

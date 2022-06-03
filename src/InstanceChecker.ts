@@ -50,6 +50,10 @@ export class InstanceChecker {
         return this.check(obj, 'FindOperator') && (obj as FindOperator<any>).type === 'or'
     }
 
+    static isAndOperator(obj: unknown): obj is EqualOperator<any> {
+        return this.check(obj, 'FindOperator') && (obj as FindOperator<any>).type === 'and'
+    }
+
     static isStartsWithOperator(obj: unknown): obj is EqualOperator<any> {
         return this.check(obj, 'FindOperator') && (obj as FindOperator<any>).type === 'startsWith'
     }

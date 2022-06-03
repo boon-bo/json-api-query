@@ -391,6 +391,13 @@ export class QueryBuilder<T> {
             return new OrOperator(...ors)
         }
 
+        if (InstanceChecker.isAndOperator(op)) {
+            let ands = (op as FindOperator<any>).value.map((x: FindOperator<any>) => this.getOperator(x, key))
+
+            return new AndOperator(...ands)
+        }
+
+
         return null
     }
 
